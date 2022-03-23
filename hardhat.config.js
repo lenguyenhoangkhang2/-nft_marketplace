@@ -6,6 +6,14 @@ module.exports = {
     artifacts: "./src/backend/artifacts",
     sources: "./src/backend/contracts",
     cache: "./src/backend/cache",
-    tests: "./src/backend/test"
+    tests: "./src/backend/test",
+  },
+  networks: {
+    rinkeby: {
+      url: "https://eth-rinkeby.alchemyapi.io/v2/-mzAWLaLgp7HLQbrxq_OFY3F1g92_6x6",
+      accounts: [
+        "ef6337e51d3ebbd7324fa968b6aa14a68c10ad48a229cbca9f0576de4c412b38",
+      ],
+    },
   },
 };
