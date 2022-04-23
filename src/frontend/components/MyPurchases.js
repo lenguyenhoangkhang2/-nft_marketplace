@@ -6,37 +6,46 @@ function MyPurchases({ marketplace, nft, account }) {
   const [loading, setLoading] = useState(true);
   const [purchases, setPurchases] = useState([]);
 
-  const loadPurchasedItems = async () => {
-    const filter = marketplace.filters.Bought(null, null, null, null, account);
-    const results = await marketplace.queryFilter(filter);
-    const purchases = await Promise.all(
-      results.map(async (i) => {
-        i = i.args;
-        const uri = await nft.tokenURI(i.tokenId);
-        const response = await fetch(uri);
-        const metadata = await response.json();
-
-        const totalPrice = await marketplace.getTotalPrice(i.itemId);
-
-        let purchasedItem = {
-          totalPrice,
-          price: i.price,
-          itemId: i.itemId,
-          name: metadata.name,
-          description: metadata.description,
-          image: metadata.image,
-        };
-
-        return purchasedItem;
-      })
-    );
-    setLoading(false);
-    setPurchases(purchases);
-  };
-
   useEffect(() => {
-    loadPurchasedItems();
-  }, []);
+    (async () => {
+      const filter = marketplace.filters.Bought(
+        null,
+        null,
+        null,
+        null,
+        null,
+        account
+      );
+
+      const results = await marketplace.queryFilter(filter);
+
+      const purchases = await Promise.all(
+        results.map(async (i) => {
+          i = i.args;
+          const uri = await nft.tokenURI(i.tokenId);
+          const response = await fetch(uri);
+          const metadata = await response.json();
+
+          const totalPrice = await marketplace.getTotalPrice(i.itemId);
+
+          let purchasedItem = {
+            totalPrice,
+            price: i.price,
+            itemId: i.itemId,
+            name: metadata.name,
+            description: metadata.description,
+            image: metadata.image,
+          };
+
+          return purchasedItem;
+        })
+      );
+
+      console.log(purchases);
+      setLoading(false);
+      setPurchases(purchases);
+    })();
+  }, [account, marketplace, nft]);
 
   if (loading)
     return (

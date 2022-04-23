@@ -1,7 +1,7 @@
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { useState } from "react";
 import { ethers } from "ethers";
-import { Button, Form, Row } from "react-bootstrap";
+import { Button, Form, Row, Spinner } from "react-bootstrap";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
@@ -10,6 +10,7 @@ function Create({ marketplace, nft }) {
   const [price, setPrice] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const uploadToIPFS = async (event) => {
     event.preventDefault();
@@ -27,11 +28,14 @@ function Create({ marketplace, nft }) {
 
   const createNFT = async () => {
     if (!image || !price || !name || !description) return;
+    setLoading(true);
+
     try {
       const result = await client.add(
         JSON.stringify({ image, name, description })
       );
-      mintThenList(result);
+      await mintThenList(result);
+      setLoading(false);
     } catch (error) {
       console.log("ipfs uri upload error: ", error);
     }
@@ -81,7 +85,13 @@ function Create({ marketplace, nft }) {
               />
               <div className="d-grid px-0">
                 <Button onClick={createNFT} variant="primary" size="lg">
-                  Create & Lit NFT!
+                  {loading ? (
+                    <>
+                      <Spinner animation="border" size="sm" /> Creating...
+                    </>
+                  ) : (
+                    "Create & List NFT!"
+                  )}
                 </Button>
               </div>
             </Row>
