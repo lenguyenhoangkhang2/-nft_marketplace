@@ -12,6 +12,8 @@ import MyListedItems from "./MyListedItems";
 import MyPurchases from "./MyPurchases";
 import Home from "./Home";
 import { Spinner } from "react-bootstrap";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [account, setAccount] = useState(null);
@@ -20,11 +22,19 @@ function App() {
   const [marketplace, setMarketplace] = useState({});
 
   const web3Handler = async () => {
-    const accounts = await window.ethereum.request({
-      method: "eth_requestAccounts",
-    });
+    if (window.ethereum) {
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
 
-    setAccount(accounts[0]);
+      accountChangedHandler(accounts[0]);
+    } else {
+      toast.error("Install Metamask");
+    }
+  };
+
+  const accountChangedHandler = (account) => {
+    setAccount(account);
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
@@ -46,6 +56,12 @@ function App() {
 
     setLoading(false);
   };
+
+  if (window.ethereum) {
+    window.ethereum.on("accountsChanged", (accounts) =>
+      accountChangedHandler(accounts[0])
+    );
+  }
 
   return (
     <BrowserRouter>
@@ -95,6 +111,17 @@ function App() {
             />
           </Routes>
         )}
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </div>
     </BrowserRouter>
   );

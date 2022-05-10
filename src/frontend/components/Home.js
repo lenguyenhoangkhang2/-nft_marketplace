@@ -53,6 +53,7 @@ function Home({ marketplace, nft }) {
       </main>
     );
 
+  console.log(items);
   return (
     <div className="flex justify-center">
       {items.length > 0 ? (
