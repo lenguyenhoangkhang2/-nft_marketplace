@@ -36,10 +36,14 @@ function Home({ marketplace, nft }) {
   };
 
   const buyMarketItem = async (item) => {
-    await (
-      await marketplace.purchaseItem(item.itemId, { value: item.totalPrice })
-    ).wait();
-    loadMarketPlaceItems();
+    try {
+      await (
+        await marketplace.purchaseItem(item.itemId, { value: item.totalPrice })
+      ).wait();
+      loadMarketPlaceItems();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {

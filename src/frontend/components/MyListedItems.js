@@ -8,6 +8,8 @@ function MyListedItems({ marketplace, nft, account }) {
   const [soldItems, setSoldItems] = useState([]);
 
   const loadListedItems = async () => {
+    setLoading(true);
+
     const itemCount = await marketplace.itemCount();
     let listedItems = [];
     let soldItems = [];
@@ -42,7 +44,7 @@ function MyListedItems({ marketplace, nft, account }) {
 
   useEffect(() => {
     loadListedItems();
-  }, []);
+  }, [account]);
 
   if (loading)
     return (

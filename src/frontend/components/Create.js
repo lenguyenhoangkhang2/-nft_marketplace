@@ -28,13 +28,11 @@ function Create({ marketplace, nft }) {
   const createNFT = async () => {
     if (!image || !price || !name || !description) return;
     setLoading(true);
-    console.log(loading);
 
     try {
       const result = await client.add(
         JSON.stringify({ image, name, description })
       );
-      console.log("ipfs add image", result);
       await mintThenList(result);
       setLoading(false);
     } catch (error) {

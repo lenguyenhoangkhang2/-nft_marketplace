@@ -7,6 +7,8 @@ function MyPurchases({ marketplace, nft, account }) {
   const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {
+    setLoading(true);
+
     (async () => {
       const filter = marketplace.filters.Bought(
         null,
@@ -41,9 +43,8 @@ function MyPurchases({ marketplace, nft, account }) {
         })
       );
 
-      console.log(purchases);
-      setLoading(false);
       setPurchases(purchases);
+      setLoading(false);
     })();
   }, [account, marketplace, nft]);
 
